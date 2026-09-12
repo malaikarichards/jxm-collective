@@ -1,0 +1,54 @@
+/* Source styles compiled by Gulp to assets/css/main.min.css */
+@tailwind base;
+
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .entry-content {
+    @apply text-jxm-navy/80 leading-relaxed;
+  }
+
+  .entry-content p {
+    @apply mb-4;
+  }
+
+  .entry-content a {
+    @apply text-jxm-navy underline decoration-jxm-gold/60 underline-offset-2 hover:text-jxm-gold;
+  }
+
+  .entry-content h2,
+  .entry-content h3,
+  .entry-content h4 {
+    @apply font-serif text-jxm-navy mt-8 mb-4;
+  }
+
+  .entry-content h2 {
+    @apply text-3xl;
+  }
+
+  .entry-content h3 {
+    @apply text-2xl;
+  }
+
+  .entry-content ul,
+  .entry-content ol {
+    @apply mb-4 pl-6;
+  }
+
+  .entry-content ul {
+    @apply list-disc;
+  }
+
+  .entry-content ol {
+    @apply list-decimal;
+  }
+
+  .entry-content img {
+    @apply h-auto max-w-full;
+  }
+
+  .entry-content blockquote {
+    @apply border-l-2 border-jxm-gold pl-4 italic my-6;
+  }
+}
