@@ -90,7 +90,7 @@ function jxm_enqueue_assets() {
 
 	wp_enqueue_style(
 		'jxm-google-fonts',
-		'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap',
+		'https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap',
 		array(),
 		null
 	);
@@ -128,7 +128,7 @@ add_action( 'wp_enqueue_scripts', 'jxm_enqueue_assets' );
  */
 function jxm_nav_link_attributes( $atts, $item, $args ) {
 	if ( isset( $args->theme_location ) && 'primary' === $args->theme_location ) {
-		$atts['class'] = 'text-sm font-medium tracking-wide text-white/90 hover:text-jxm-gold transition-colors duration-300';
+		$atts['class'] = 'text-sm font-medium tracking-wide text-black/90 hover:text-jxm-gold transition-colors duration-300';
 	}
 
 	if ( isset( $args->theme_location ) && 'footer' === $args->theme_location ) {

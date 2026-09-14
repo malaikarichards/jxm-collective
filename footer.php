@@ -1,9 +1,10 @@
 	<footer class="bg-jxm-navy text-white mt-auto">
 		<div class="container mx-auto px-5 py-12 lg:py-16">
 			<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
-				<div class="flex items-center gap-8">
+				<div>
+					<div class="flex items-center gap-8">
 					<img
-						src="<?php echo esc_url( jxm_asset( 'images/jxm-collective-logo-light.svg' ) ); ?>"
+						src="<?php echo esc_url( jxm_asset( 'images/jxm-collective-logo-white.svg' ) ); ?>"
 						alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
 						class="h-16 w-auto"
 					>
@@ -12,6 +13,10 @@
 						alt="<?php esc_attr_e( 'The Luxury Home Team', 'jxm' ); ?>"
 						class="h-16 w-auto"
 					>
+					</div>
+					<p class="text-white/60 text-sm ">
+					South Florida's premier luxury real estate team, guiding discerning clients through exceptional properties.
+					</p>
 				</div>
 
 				<?php

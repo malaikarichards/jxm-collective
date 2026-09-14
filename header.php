@@ -6,10 +6,10 @@
 	<link rel="profile" href="https://gmpg.org/xfn/11">
 	<?php wp_head(); ?>
 </head>
-<body <?php body_class( 'min-h-screen flex flex-col bg-jxm-cream text-jxm-black antialiased font-sans' ); ?>>
+<body <?php body_class( 'min-h-screen flex flex-col text-jxm-black antialiased font-sans' ); ?>>
 <?php wp_body_open(); ?>
 
-<header class="bg-jxm-navy shadow-sm sticky top-0 z-50">
+<header class="sticky top-0 z-50 bg-white">
 	<div class="container mx-auto px-5">
 		<nav class="relative flex justify-between items-center py-4 lg:py-5">
 			<div class="brand max-w-[160px] lg:max-w-[200px]">
@@ -18,7 +18,7 @@
 				<?php else : ?>
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="block">
 						<img
-							src="<?php echo esc_url( jxm_asset( 'images/jxm-collective-logo-light.svg' ) ); ?>"
+							src="<?php echo esc_url( jxm_asset( 'images/jxm-collective-the-luxury-home-team-logo-horizontal.png' ) ); ?>"
 							alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
 							class="w-full h-auto"
 						>
@@ -28,7 +28,7 @@
 
 			<button
 				type="button"
-				class="menu-toggle lg:hidden inline-flex items-center justify-center w-10 h-10 text-white"
+				class="menu-toggle lg:hidden inline-flex items-center justify-center w-10 h-10 text-black"
 				aria-controls="primary-menu"
 				aria-expanded="false"
 			>
@@ -41,7 +41,7 @@
 				</svg>
 			</button>
 
-			<div id="primary-menu" class="hidden lg:block absolute lg:static left-0 right-0 top-full bg-jxm-navy lg:bg-transparent px-5 lg:px-0 pb-6 lg:pb-0">
+			<div id="primary-menu" class="hidden lg:block absolute lg:static left-0 right-0 top-full bg-white lg:bg-transparent px-5 lg:px-0 pb-6 lg:pb-0">
 				<?php
 				wp_nav_menu(
 					array(

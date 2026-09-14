@@ -17,6 +17,10 @@
     @apply text-jxm-navy underline decoration-jxm-gold/60 underline-offset-2 hover:text-jxm-gold;
   }
 
+  .entry-content h1 {
+    @apply text-7xl font-serif;
+  }
+
   .entry-content h2,
   .entry-content h3,
   .entry-content h4 {
@@ -24,7 +28,7 @@
   }
 
   .entry-content h2 {
-    @apply text-3xl;
+    @apply text-5xl;
   }
 
   .entry-content h3 {
@@ -50,5 +54,64 @@
 
   .entry-content blockquote {
     @apply border-l-2 border-jxm-gold pl-4 italic my-6;
+  }
+
+  .entry-content .gradient-bg {
+    @apply bg-gradient-to-br from-primary to-supporting;
+  }
+
+
+
+  .btn-primary {
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(201, 166, 97, 0.3);
+  }
+
+  .property-card:hover .property-img {
+    transform: scale(1.05);
+  }
+
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: #C9A661;
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  .heart-btn.favorited i {
+    font-weight: 900;
+    color: #C9A661;
+  }
+
+  .play-btn-icon {
+    transition: transform 0.2s ease;
+  }
+
+  .group:hover .play-btn-icon {
+    transform: scale(1.15);
+  }
+
+  .field-error {
+    border-color: #dc2626 !important;
+  }
+
+  .toast {
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 }

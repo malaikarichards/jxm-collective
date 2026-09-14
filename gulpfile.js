@@ -9,6 +9,9 @@ const tailwindcss = require('tailwindcss');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
 
+// Local WP uses a locally-trusted cert that Node does not trust by default.
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 const paths = {
   css: {
     src: 'src/css/*.css',
@@ -25,13 +28,14 @@ const paths = {
 
 const browserSyncConfig = {
   proxy: {
-    target: 'http://jxmc.local',
+    target: 'https://jxmc.local',
     proxyReq: [
       function (proxyReq) {
         proxyReq.setHeader('Accept-Encoding', 'identity');
       },
     ],
   },
+  https: true,
   files: [
     'assets/css/**/*.css',
     'assets/js/**/*.js',
