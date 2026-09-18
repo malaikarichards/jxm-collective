@@ -1,0 +1,34 @@
+{
+	"name": "acf/featured-listings",
+	"title": "Featured Listings",
+	"description": "A grid of featured listings chosen with a post object field.",
+	"category": "jxm",
+	"icon": "admin-home",
+	"keywords": ["featured", "listings", "properties", "grid"],
+	"textdomain": "jxm",
+	"apiVersion": 3,
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "render.php",
+		"blockVersion": 3,
+		"fields": [
+			{
+				"name": "listings",
+				"label": "Listings",
+				"type": "post_object",
+				"instructions": "Search and select listings. Drag to reorder.",
+				"post_type": ["listing"],
+				"return_format": "object",
+				"multiple": 1,
+				"ui": 1,
+				"allow_null": 1
+			}
+		]
+	},
+	"supports": {
+		"align": ["wide", "full"],
+		"anchor": true,
+		"mode": true
+	},
+	"align": "full"
+}

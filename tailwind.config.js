@@ -3,9 +3,14 @@ module.exports = {
   content: [
     './*.php',
     './template-parts/**/*.php',
+    './blocks/**/*.php',
+    './inc/**/*.php',
     './src/**/*.js',
   ],
   theme: {
+    container: {
+      screens: {},
+    },
     fontFamily: {
       sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       serif: ['Playfair Display', 'ui-serif', 'Georgia', 'serif'],

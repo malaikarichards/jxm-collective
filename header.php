@@ -9,10 +9,10 @@
 <body <?php body_class( 'min-h-screen flex flex-col text-jxm-black antialiased font-sans' ); ?>>
 <?php wp_body_open(); ?>
 
-<header class="sticky top-0 z-50 bg-white">
-	<div class="container mx-auto px-5">
-		<nav class="relative flex justify-between items-center py-4 lg:py-5">
-			<div class="brand max-w-[160px] lg:max-w-[200px]">
+<header class="sticky top-0 z-50 bg-white shadow">
+	<div class="container mx-auto">
+		<nav class="relative flex justify-between items-center py-3">
+			<div class="brand">
 				<?php if ( has_custom_logo() ) : ?>
 					<?php the_custom_logo(); ?>
 				<?php else : ?>
@@ -20,7 +20,7 @@
 						<img
 							src="<?php echo esc_url( jxm_asset( 'images/jxm-collective-the-luxury-home-team-logo-horizontal.png' ) ); ?>"
 							alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
-							class="w-full h-auto"
+							class="h-8 w-auto object-contain pr-8"
 						>
 					</a>
 				<?php endif; ?>
@@ -41,17 +41,18 @@
 				</svg>
 			</button>
 
-			<div id="primary-menu" class="hidden lg:block absolute lg:static left-0 right-0 top-full bg-white lg:bg-transparent px-5 lg:px-0 pb-6 lg:pb-0">
+			<div id="primary-menu" class="flex items-center justify-between hidden absolute lg:flex lg:static left-0 right-0 top-full bg-white lg:bg-transparent px-5 lg:px-0 pb-6 lg:pb-0 flex-col lg:flex-row">
 				<?php
 				wp_nav_menu(
 					array(
 						'theme_location' => 'primary',
 						'container'      => false,
-						'menu_class'     => 'flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8',
+						'menu_class'     => 'flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-9',
 						'fallback_cb'    => 'jxm_fallback_menu',
 					)
 				);
 				?>
+				<a class="btn-primary bg-accent text-white text-center font-semibold py-3 px-6 lg:ml-9 mt-9 lg:mt-0 " href="<?php echo esc_url( home_url( '/' ) ); ?>">Schedule a Consultation</a>
 			</div>
 		</nav>
 	</div>

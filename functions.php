@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'JXM_VERSION', '1.0.0' );
 
+require get_template_directory() . '/inc/acf-blocks.php';
+
 /**
  * Theme asset URL helper.
  *
@@ -49,8 +51,10 @@ function jxm_setup() {
 		)
 	);
 	add_theme_support( 'wp-block-styles' );
+	add_theme_support( 'editor-styles' );
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'align-wide' );
+	add_editor_style( 'assets/css/main.min.css' );
 
 	register_nav_menus(
 		array(
@@ -96,10 +100,22 @@ function jxm_enqueue_assets() {
 	);
 
 	wp_enqueue_style(
+		'jxm-font-awesome',
+		'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css',
+		array(),
+		'7.3.1'
+	);
+
+	wp_enqueue_style(
 		'jxm-style',
 		jxm_asset( 'css/main.min.css' ),
-		array( 'jxm-google-fonts' ),
+		array( 'jxm-google-fonts', 'jxm-font-awesome', 'global-styles' ),
 		file_exists( $css_path ) ? filemtime( $css_path ) : JXM_VERSION
+	);
+
+	wp_add_inline_style(
+		'global-styles',
+		':root{--wp--preset--shadow--natural:0 4px 20px 0 rgba(0,0,0,0.08);}'
 	);
 
 	wp_enqueue_script( 'jquery' );
@@ -116,7 +132,18 @@ function jxm_enqueue_assets() {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'jxm_enqueue_assets' );
+add_action( 'wp_enqueue_scripts', 'jxm_enqueue_assets', 20 );
+
+/**
+ * Keep the Natural shadow preset in the block editor too.
+ */
+function jxm_override_natural_shadow() {
+	wp_add_inline_style(
+		'global-styles',
+		':root{--wp--preset--shadow--natural:0 4px 20px 0 rgba(0,0,0,0.08);}'
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'jxm_override_natural_shadow', 100 );
 
 /**
  * Add Tailwind classes to primary nav links.
@@ -128,7 +155,7 @@ add_action( 'wp_enqueue_scripts', 'jxm_enqueue_assets' );
  */
 function jxm_nav_link_attributes( $atts, $item, $args ) {
 	if ( isset( $args->theme_location ) && 'primary' === $args->theme_location ) {
-		$atts['class'] = 'text-sm font-medium tracking-wide text-black/90 hover:text-jxm-gold transition-colors duration-300';
+		$atts['class'] = 'nav-link text-sm font-medium tracking-wide text-black/90';
 	}
 
 	if ( isset( $args->theme_location ) && 'footer' === $args->theme_location ) {
@@ -161,6 +188,6 @@ add_filter( 'nav_menu_css_class', 'jxm_nav_css_class', 10, 3 );
  */
 function jxm_fallback_menu() {
 	echo '<ul class="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8">';
-	echo '<li><a class="text-sm font-medium tracking-wide text-white/90 hover:text-jxm-gold transition-colors duration-300" href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( 'Home', 'jxm' ) . '</a></li>';
+	echo '<li><a class="nav-link text-sm font-medium tracking-wide text-black/90" href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( 'Home', 'jxm' ) . '</a></li>';
 	echo '</ul>';
 }

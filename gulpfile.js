@@ -22,7 +22,7 @@ const paths = {
     dest: 'assets/js/',
   },
   php: {
-    src: ['./*.php', './template-parts/**/*.php'],
+    src: ['./*.php', './template-parts/**/*.php', './blocks/**/*.php', './inc/**/*.php'],
   },
 };
 
@@ -41,6 +41,8 @@ const browserSyncConfig = {
     'assets/js/**/*.js',
     './*.php',
     './template-parts/**/*.php',
+    './blocks/**/*.php',
+    './inc/**/*.php',
   ],
   open: false,
   notify: false,
