@@ -190,3 +190,14 @@
   display: flex;
   align-items: center;
 }
+
+#eb-form-newsletter,
+#eb-form-newsletter .engage-hub-script-form {
+  width: 100%;
+  max-width: 24rem;
+}
+
+#eb-form-newsletter iframe {
+  width: 100% !important;
+  max-width: 100%;
+}
