@@ -37,7 +37,7 @@
   }
 
   .entry-content h2 {
-    @apply text-5xl;
+    @apply text-4xl;
   }
 
   .entry-content h3 {
@@ -167,6 +167,10 @@
 @media (min-width: 1024px) {
   .even-height {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .even-height:has(> :nth-child(3):last-child) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

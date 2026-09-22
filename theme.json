@@ -31,7 +31,19 @@
 			]
 		},
 		"typography": {
-			"lineHeight": true
+			"lineHeight": true,
+			"fontFamilies": [
+				{
+					"name": "Sans Serif",
+					"slug": "sans-serif",
+					"fontFamily": "Inter, ui-sans-serif, system-ui, sans-serif"
+				},
+				{
+					"name": "Serif",
+					"slug": "serif",
+					"fontFamily": "\"Playfair Display\", ui-serif, Georgia, serif"
+				}
+			]
 		},
 		"shadow": {
 			"defaultPresets": false,
@@ -67,6 +79,11 @@
 					"name": "Supporting"
 				}
 			]
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans-serif)"
 		}
 	}
 }
