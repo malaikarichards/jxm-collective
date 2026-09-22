@@ -6,6 +6,12 @@
 			"contentSize": "768px",
 			"wideSize": "1280px"
 		},
+		"border": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		},
 		"spacing": {
 			"margin": true,
 			"padding": true,

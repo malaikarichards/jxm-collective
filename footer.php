@@ -40,11 +40,11 @@
 					<p class="text-white font-bold uppercase tracking-widest">
 						Connect
 </p>
-					<ul class="flex items-center gap-4 my-6">
-						<li class="block"><a href="#" class="text-white bg-supporting rounded-full p-2"><i class="fa-brands fa-instagram"></i></a></li>
-						<li class="block"><a href="#" class="text-white bg-supporting rounded-full p-2"><i class="fa-brands fa-facebook-f"></i></a></li>
+					<ul class="flex items-center gap-4 my-4">
+						<li class="block"><a href="https://www.instagram.com/jxmcollective/" target="_blank" class="text-white bg-supporting rounded-full p-2"><i class="fa-brands fa-instagram"></i></a></li>
+						<li class="block"><a href="https://www.facebook.com/jxmcollective/" target="_blank" class="text-white bg-supporting rounded-full p-2"><i class="fa-brands fa-facebook-f"></i></a></li>
 					</ul>
-					<p class="text-white font-bold uppercase tracking-widest">
+					<p class="text-white font-bold uppercase tracking-widest mt-10 mb-4">
 						Stay in the Loop
 					</p>
 					<!-- <div class="engage-hub-form-embed flex items-center gap-2" id="eh_form_4588890795802624"  data-id="4588890795802624"></div> -->
@@ -86,7 +86,7 @@
 										'.eb-form-input::placeholder{color:rgba(255,255,255,.6)!important;opacity:1!important}',
 										'.eb-form-input::-webkit-input-placeholder{color:rgba(255,255,255,.6)!important}',
 										'.eb-form-input::-moz-placeholder{color:rgba(255,255,255,.6)!important;opacity:1!important}',
-										'.btn{background-image:url("data:image/svg+xml,' + encodeURIComponent(svg) + '")!important;background-repeat:no-repeat!important;background-position:center!important;background-size:16px 16px!important;color:transparent!important;font-size:0!important;width:42px!important;min-width:42px!important;height:42px!important;padding:0!important;border:1px solid #C9A661!important;box-sizing:border-box}',
+										'.btn{background-image:url("data:image/svg+xml,' + encodeURIComponent(svg) + '")!important;background-repeat:no-repeat!important;background-position:center!important;background-size:16px 16px!important;color:transparent!important;font-size:0!important;width:43.5px!important;min-width:42px!important;height:43.5px!important;padding:0!important;box-sizing:border-box}',
 									].join('');
 									(doc.head || doc.documentElement).appendChild(style);
 								}
