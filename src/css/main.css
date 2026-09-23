@@ -130,6 +130,22 @@
   .toast {
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
+
+  .listing-pagination .nav-links {
+    @apply flex flex-wrap items-center justify-center gap-2;
+  }
+
+  .listing-pagination .page-numbers {
+    @apply inline-flex items-center justify-center min-w-[2.5rem] h-10 px-3 text-sm font-medium text-jxm-navy no-underline border border-jxm-navy/15 bg-white transition-colors duration-300;
+  }
+
+  .listing-pagination a.page-numbers:hover {
+    @apply border-accent text-accent;
+  }
+
+  .listing-pagination .page-numbers.current {
+    @apply bg-jxm-navy text-white border-jxm-navy;
+  }
 }
 
 .btn-arrow a {

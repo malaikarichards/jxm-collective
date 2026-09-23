@@ -15,13 +15,14 @@
 							class="h-16 w-auto"
 						>
 					</div>
-					<p class="text-white text-sm max-w-md">
-					South Florida's premier luxury real estate team, guiding discerning clients through exceptional properties.
+					<p class="text-white text-sm max-w-md mb-4">
+					South Florida's premier luxury real estate agents, guiding discerning clients through exceptional properties.
 					</p>
+					<p>Affiliated with The Luxury Home Team</p>
 				</div>
 
 				<div class="">
-					<p class="text-white font-bold uppercase tracking-widest">
+					<p class="text-white font-bold uppercase tracking-widest mb-4">
 						Quick Links
 </p>
 					<?php
@@ -47,7 +48,6 @@
 					<p class="text-white font-bold uppercase tracking-widest mt-10 mb-4">
 						Stay in the Loop
 					</p>
-					<!-- <div class="engage-hub-form-embed flex items-center gap-2" id="eh_form_4588890795802624"  data-id="4588890795802624"></div> -->
 					<div id="eb-form-newsletter" class="flex items-center gap-2"></div>
 					<script>
 						(window.EhDynamicRef ||= []).push(() => {
@@ -121,9 +121,8 @@
 			<div class="mt-10 pt-6 border-t border-white text-sm text-center lg:text-left text-white flex flex-col lg:flex-row justify-between">
 				<p class="mb-4 lg:mb-0">&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?>. <?php esc_html_e( 'All rights reserved.', 'jxm' ); ?></p>
 				<ul class="flex items-center gap-4 flex-col lg:flex-row">
-					<li><a href="#" class="text-white">Privacy Policy</a></li>
-					<li><a href="#" class="text-white">Terms of Use</a></li>
-					<li><a href="#" class="text-white"><i class="fa-solid fa-house text-accent"></i> Equal Housing Opportunity</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>" class="text-white">Privacy Policy</a></li>
+					<li><a href="https://www.hud.gov/helping-americans/fair-housing-act-overview" target="_blank" class="text-white"><i class="fa-solid fa-house text-accent"></i> Equal Housing Opportunity</a></li>
 				</ul>
 			</div>
 		</div>

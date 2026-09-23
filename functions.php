@@ -13,6 +13,7 @@ define( 'JXM_VERSION', '1.0.0' );
 
 require get_template_directory() . '/inc/acf-blocks.php';
 require get_template_directory() . '/inc/spark.php';
+require get_template_directory() . '/inc/listings.php';
 
 /**
  * Theme asset URL helper.

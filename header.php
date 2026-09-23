@@ -18,7 +18,7 @@
 				<?php else : ?>
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="block">
 						<img
-							src="<?php echo esc_url( jxm_asset( 'images/jxm-collective-the-luxury-home-team-logo-horizontal.png' ) ); ?>"
+							src="<?php echo esc_url( jxm_asset( 'images/tlht-jxmc-horizontal-logo-navy.svg' ) ); ?>"
 							alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
 							class="h-8 w-auto object-contain pr-8"
 						>
@@ -52,7 +52,7 @@
 					)
 				);
 				?>
-				<a class="btn-primary bg-accent text-white text-center font-semibold py-3 px-6 lg:ml-9 mt-9 lg:mt-0 " href="<?php echo esc_url( home_url( '/' ) ); ?>">Schedule a Consultation</a>
+				<a class="btn-primary bg-accent text-white text-center font-semibold py-3 px-6 lg:ml-9 mt-9 lg:mt-0 " href="/contact/">Schedule a Consultation</a>
 			</div>
 		</nav>
 	</div>

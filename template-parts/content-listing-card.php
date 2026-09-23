@@ -22,11 +22,12 @@ if ( ! $listing_id ) {
 $permalink = get_permalink( $listing_id );
 $title     = get_the_title( $listing_id );
 $excerpt   = get_the_excerpt( $listing_id );
-$price     = get_field( 'price', $listing_id );
-$beds      = get_field( 'bedrooms', $listing_id );
-$baths     = get_field( 'bathrooms', $listing_id );
-$sqft      = get_field( 'square_feet', $listing_id );
-$location  = get_field( 'location', $listing_id );
+$price    = get_field( 'price', $listing_id );
+$beds     = get_field( 'bedrooms', $listing_id );
+$baths    = get_field( 'bathrooms', $listing_id );
+$sqft     = get_field( 'sqft', $listing_id );
+$address  = get_field( 'address', $listing_id );
+$price_display = function_exists( 'jxm_format_listing_price' ) ? jxm_format_listing_price( $price ) : $price;
 ?>
 <article id="post-<?php echo esc_attr( (string) $listing_id ); ?>" class="property-card bg-white shadow-soft overflow-hidden flex flex-col h-full">
 	<a href="<?php echo esc_url( $permalink ); ?>" class="block overflow-hidden no-underline">
@@ -47,8 +48,8 @@ $location  = get_field( 'location', $listing_id );
 	</a>
 
 	<div class="p-6 flex flex-col flex-grow">
-		<?php if ( $location ) : ?>
-			<p class="text-accent text-xs font-semibold uppercase tracking-widest mb-2"><?php echo esc_html( $location ); ?></p>
+		<?php if ( $address ) : ?>
+			<p class="text-accent text-xs font-semibold uppercase tracking-widest mb-2"><?php echo esc_html( $address ); ?></p>
 		<?php endif; ?>
 
 		<h3 class="font-serif text-jxm-navy text-2xl mt-0 mb-3">
@@ -57,8 +58,8 @@ $location  = get_field( 'location', $listing_id );
 			</a>
 		</h3>
 
-		<?php if ( $price ) : ?>
-			<p class="text-jxm-navy font-semibold mb-3"><?php echo esc_html( $price ); ?></p>
+		<?php if ( $price_display ) : ?>
+			<p class="text-jxm-navy font-semibold mb-3"><?php echo esc_html( $price_display ); ?></p>
 		<?php endif; ?>
 
 		<?php if ( $excerpt ) : ?>
