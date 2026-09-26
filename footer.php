@@ -2,6 +2,7 @@
 		<div class="container mx-auto px-5 py-12 lg:py-16">
 			<div class="flex flex-col lg:flex-row lg:justify-between gap-10">
 				<div>
+					<a href="<?php echo esc_url( home_url( '/' ) ); ?>">
 					<div class="flex items-center gap-4 mb-8">
 						<img
 							src="<?php echo esc_url( jxm_asset( 'images/the-luxury-home-team-logo-white.png' ) ); ?>"

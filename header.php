@@ -10,17 +10,17 @@
 <?php wp_body_open(); ?>
 
 <header class="sticky top-0 z-50 bg-white shadow">
-	<div class="container mx-auto">
-		<nav class="relative flex justify-between items-center py-3">
+	<div class="">
+		<nav class="container mx-auto relative flex justify-between items-center py-6">
 			<div class="brand">
 				<?php if ( has_custom_logo() ) : ?>
 					<?php the_custom_logo(); ?>
 				<?php else : ?>
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="block">
 						<img
-							src="<?php echo esc_url( jxm_asset( 'images/tlht-jxmc-horizontal-logo-navy.svg' ) ); ?>"
+							src="<?php echo esc_url( jxm_asset( 'images/tlht-jxmc-horizontal-logo-navy-u.svg' ) ); ?>"
 							alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
-							class="h-8 w-auto object-contain pr-8"
+							class="h-20 w-auto object-contain pr-4"
 						>
 					</a>
 				<?php endif; ?>
@@ -41,7 +41,7 @@
 				</svg>
 			</button>
 
-			<div id="primary-menu" class="flex items-center justify-between hidden absolute lg:flex lg:static left-0 right-0 top-full bg-white lg:bg-transparent px-5 lg:px-0 pb-6 lg:pb-0 flex-col lg:flex-row">
+			<div id="primary-menu" class="flex items-center justify-between hidden absolute lg:flex lg:static left-0 right-0 top-full bg-white lg:bg-transparent px-5 lg:px-0 pb-6 lg:pb-0 flex-col lg:flex-row -mt-1 lg:mt-0">
 				<?php
 				wp_nav_menu(
 					array(

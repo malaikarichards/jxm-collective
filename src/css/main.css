@@ -147,6 +147,19 @@
     @apply bg-jxm-navy text-white border-jxm-navy;
   }
 }
+.wp-block-buttons>.wp-block-button {
+  @apply w-full sm:w-auto;
+}
+
+header .menu-item{
+  @apply text-center;
+}
+.wp-block-media-text__media{
+  @apply px-6 sm:px-0 pb-6 sm:pb-0;
+}
+.card-columns{
+  @apply px-6;
+}
 
 .btn-arrow a {
   display: inline-flex;
@@ -242,3 +255,4 @@
   height: 100%;
   border: 0;
 }
+
