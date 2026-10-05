@@ -28,6 +28,18 @@ $baths    = get_field( 'bathrooms', $listing_id );
 $sqft     = get_field( 'sqft', $listing_id );
 $address  = get_field( 'address', $listing_id );
 $price_display = function_exists( 'jxm_format_listing_price' ) ? jxm_format_listing_price( $price ) : $price;
+
+$photo_url = '';
+$photo_alt = $title;
+
+if ( ! has_post_thumbnail( $listing_id ) ) {
+	$gallery = get_field( 'image_gallery', $listing_id );
+
+	if ( is_array( $gallery ) && ! empty( $gallery[0]['url'] ) ) {
+		$photo_url = $gallery[0]['url'];
+		$photo_alt = ! empty( $gallery[0]['alt'] ) ? $gallery[0]['alt'] : $title;
+	}
+}
 ?>
 <article id="post-<?php echo esc_attr( (string) $listing_id ); ?>" class="property-card bg-white shadow-soft overflow-hidden flex flex-col h-full">
 	<a href="<?php echo esc_url( $permalink ); ?>" class="block overflow-hidden no-underline">
@@ -42,6 +54,14 @@ $price_display = function_exists( 'jxm_format_listing_price' ) ? jxm_format_list
 				)
 			);
 			?>
+		<?php elseif ( $photo_url ) : ?>
+			<img
+				src="<?php echo esc_url( $photo_url ); ?>"
+				alt="<?php echo esc_attr( $photo_alt ); ?>"
+				class="property-img w-full h-64 object-cover"
+				loading="lazy"
+				decoding="async"
+			>
 		<?php else : ?>
 			<div class="property-img w-full h-64 bg-secondary"></div>
 		<?php endif; ?>

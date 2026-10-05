@@ -7,7 +7,7 @@
 define( 'SPARK_API_ENDPOINT', 'https://replication.sparkapi.com/Version/3/Reso/OData/Property' );
 
 // OData $filter selecting which listings to import. Field names follow the RESO Data Dictionary.
-define( 'SPARK_API_FILTER', "StandardStatus eq 'Active' and PropertyType eq 'Residential' and ListPrice ge 1000000" );
+define( 'SPARK_API_FILTER', "StandardStatus eq 'Active' and PropertyType eq 'Residential' and ListPrice ge 400000 and ListPrice le 2000000" );
 
 // Property fields requested from the API. Photos come from $expand=Media.
 define( 'SPARK_API_SELECT', 'ListingKey,ListingId,ListPrice,BedroomsTotal,BathroomsTotalDecimal,BathroomsTotalInteger,LivingArea,UnparsedAddress,StandardStatus,PropertySubType,PublicRemarks,ModificationTimestamp' );
@@ -597,6 +597,61 @@ function spark_format_image_gallery_field( $value, $post_id, $field ) {
     return $items;
 }
 
+/**
+ * Stop an in-progress sync and clear its queued batches.
+ */
+function spark_cancel_sync() {
+    delete_option( 'spark_sync_state' );
+    delete_option( 'spark_sync_seen' );
+    delete_transient( 'spark_sync_lock' );
+    wp_clear_scheduled_hook( 'spark_sync_batch_event' );
+}
+
+/**
+ * Number of listing posts in any status, including drafts and trash.
+ *
+ * @return int
+ */
+function spark_count_listings() {
+    return (int) array_sum( (array) wp_count_posts( 'listing' ) );
+}
+
+/**
+ * Permanently delete listing posts until the batch time budget runs out.
+ *
+ * @return int Listings still remaining.
+ */
+function spark_delete_listings_batch() {
+    if ( function_exists( 'set_time_limit' ) ) {
+        set_time_limit( 300 );
+    }
+
+    $deadline = time() + SPARK_SYNC_BATCH_SECONDS;
+
+    do {
+        $ids = get_posts(
+            array(
+                'post_type'        => 'listing',
+                'post_status'      => array_keys( get_post_stati() ),
+                'posts_per_page'   => 100,
+                'fields'           => 'ids',
+                'no_found_rows'    => true,
+                'suppress_filters' => true,
+            )
+        );
+
+        foreach ( $ids as $id ) {
+            wp_delete_post( $id, true );
+
+            if ( time() >= $deadline ) {
+                break 2;
+            }
+        }
+    } while ( $ids && time() < $deadline );
+
+    return spark_count_listings();
+}
+
 // ==========================================
 // 3. DAILY CRON JOB AUTOMATION
 // ==========================================
@@ -660,8 +715,46 @@ function render_spark_sync_admin_page() {
         }
     }
 
-    $state = get_option( 'spark_sync_state' );
-    $last  = get_option( 'spark_sync_last' );
+    $deleting = false;
+
+    if ( isset( $_POST['spark_delete_listings'] ) && check_admin_referer( 'spark_delete_action', 'spark_delete_nonce' ) ) {
+        if ( 'DELETE' !== trim( wp_unslash( $_POST['spark_delete_confirm'] ?? '' ) ) ) {
+            echo '<div class="notice notice-error is-dismissible"><p>Type DELETE in the confirmation box to delete all listings.</p></div>';
+        } else {
+            spark_cancel_sync();
+            update_option( 'spark_delete_in_progress', 1, false );
+            $deleting = true;
+        }
+    } elseif (
+        isset( $_GET['spark_delete_continue'] )
+        && get_option( 'spark_delete_in_progress' )
+        && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['spark_delete_continue'] ) ), 'spark_delete_continue' )
+    ) {
+        $deleting = true;
+    }
+
+    if ( $deleting ) {
+        $remaining = spark_delete_listings_batch();
+
+        if ( $remaining ) {
+            $continue_url = add_query_arg(
+                'spark_delete_continue',
+                wp_create_nonce( 'spark_delete_continue' ),
+                admin_url( 'edit.php?post_type=listing&page=spark-api-sync' )
+            );
+
+            // Each reload deletes another batch so no single request times out.
+            echo '<meta http-equiv="refresh" content="1;url=' . esc_url( $continue_url ) . '">';
+            echo '<div class="notice notice-info"><p>Deleting listings&hellip; ' . esc_html( number_format( $remaining ) ) . ' remaining. Keep this page open until it finishes.</p></div>';
+        } else {
+            delete_option( 'spark_delete_in_progress' );
+            echo '<div class="notice notice-success is-dismissible"><p>All listings have been deleted.</p></div>';
+        }
+    }
+
+    $state         = get_option( 'spark_sync_state' );
+    $last          = get_option( 'spark_sync_last' );
+    $listing_count = spark_count_listings();
     ?>
     <div class="wrap">
         <h1>Spark API Listing Synchronization</h1>
@@ -724,6 +817,26 @@ function render_spark_sync_admin_page() {
             <?php wp_nonce_field( 'spark_sync_action', 'spark_sync_nonce' ); ?>
             <input type="hidden" name="manual_spark_sync" value="start">
             <?php submit_button( 'Force Sync Now', 'primary' ); ?>
+        </form>
+
+        <hr>
+
+        <h2>Delete All Listings</h2>
+        <p>
+            Permanently deletes all <?php echo esc_html( number_format( $listing_count ) ); ?> listing posts (published, draft, and trashed) and their details.
+            This cannot be undone. Any sync in progress is stopped; the next sync will import listings from Spark again.
+        </p>
+        <?php if ( ! $deleting && get_option( 'spark_delete_in_progress' ) && $listing_count ) : ?>
+            <p><strong>A previous delete was interrupted.</strong> Submit again to delete the remaining listings.</p>
+        <?php endif; ?>
+        <form method="post" action="" onsubmit="return confirm('Permanently delete all listings? This cannot be undone.');">
+            <?php wp_nonce_field( 'spark_delete_action', 'spark_delete_nonce' ); ?>
+            <input type="hidden" name="spark_delete_listings" value="1">
+            <p>
+                <label for="spark_delete_confirm">Type <code>DELETE</code> to confirm:</label>
+                <input type="text" id="spark_delete_confirm" name="spark_delete_confirm" class="regular-text" autocomplete="off" spellcheck="false">
+            </p>
+            <?php submit_button( 'Delete All Listings', 'delete', 'submit', true, $listing_count ? array() : array( 'disabled' => 'disabled' ) ); ?>
         </form>
     </div>
     <?php
