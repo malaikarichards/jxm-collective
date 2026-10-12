@@ -21,14 +21,12 @@ if ( ! $listing_id ) {
 
 $permalink = get_permalink( $listing_id );
 $title     = get_the_title( $listing_id );
-$excerpt   = get_the_excerpt( $listing_id );
 $price    = get_field( 'price', $listing_id );
 $beds     = get_field( 'bedrooms', $listing_id );
 $baths    = get_field( 'bathrooms', $listing_id );
 $sqft     = get_field( 'sqft', $listing_id );
 $address  = get_field( 'address', $listing_id );
 $price_display = function_exists( 'jxm_format_listing_price' ) ? jxm_format_listing_price( $price ) : $price;
-
 $photo_url = '';
 $photo_alt = $title;
 
@@ -49,7 +47,7 @@ if ( ! has_post_thumbnail( $listing_id ) ) {
 				$listing_id,
 				'jxm-card',
 				array(
-					'class' => 'property-img w-full h-64 object-cover',
+					'class' => 'property-img w-full h-auto aspect-video object-cover',
 					'alt'   => $title,
 				)
 			);
@@ -58,12 +56,12 @@ if ( ! has_post_thumbnail( $listing_id ) ) {
 			<img
 				src="<?php echo esc_url( $photo_url ); ?>"
 				alt="<?php echo esc_attr( $photo_alt ); ?>"
-				class="property-img w-full h-64 object-cover"
+				class="property-img w-full h-auto aspect-video object-cover"
 				loading="lazy"
 				decoding="async"
 			>
 		<?php else : ?>
-			<div class="property-img w-full h-64 bg-secondary"></div>
+			<div class="property-img w-full aspect-video bg-secondary"></div>
 		<?php endif; ?>
 	</a>
 
@@ -80,10 +78,6 @@ if ( ! has_post_thumbnail( $listing_id ) ) {
 
 		<?php if ( $price_display ) : ?>
 			<p class="text-jxm-navy font-semibold mb-3"><?php echo esc_html( $price_display ); ?></p>
-		<?php endif; ?>
-
-		<?php if ( $excerpt ) : ?>
-			<p class="text-jxm-navy/70 text-sm leading-relaxed mb-4"><?php echo esc_html( wp_strip_all_tags( $excerpt ) ); ?></p>
 		<?php endif; ?>
 
 		<?php if ( $beds || $baths || $sqft ) : ?>

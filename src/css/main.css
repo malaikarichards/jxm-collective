@@ -88,6 +88,19 @@
     transform: scale(1.05);
   }
 
+  /* Cards can sit inside .entry-content (Featured Listings block); undo its prose link, heading, and list styles. */
+  .property-card a {
+    @apply no-underline;
+  }
+
+  .property-card h3 {
+    @apply mt-0;
+  }
+
+  .property-card ul {
+    @apply list-none mb-0 pl-0;
+  }
+
   .nav-link {
     position: relative;
     display: inline-block;

@@ -14,7 +14,7 @@ define(
 );
 
 // Property fields requested from the API. Photos come from $expand=Media.
-define( 'SPARK_API_SELECT', 'ListingKey,ListingId,ListPrice,BedroomsTotal,BathroomsTotalDecimal,BathroomsTotalInteger,LivingArea,UnparsedAddress,StandardStatus,PropertySubType,PublicRemarks,ModificationTimestamp' );
+define( 'SPARK_API_SELECT', 'ListingKey,ListingId,ListPrice,BedroomsTotal,BathroomsTotalDecimal,BathroomsTotalInteger,LivingArea,UnparsedAddress,StandardStatus,PropertySubType,PublicRemarks,ModificationTimestamp,ListOfficeName,ListOfficePhone,ListOfficeEmail' );
 
 // Listings per API page ($top). Replication keys allow up to 1000.
 define( 'SPARK_API_PAGE_SIZE', 100 );
@@ -278,6 +278,9 @@ function spark_import_listing( $listing ) {
     $post_id = spark_find_listing_post_id( $listing_id, $mls_id, $title );
 
     if ( $post_id && $modified && get_post_meta( $post_id, 'spark_modified', true ) === $modified ) {
+        // Saved even when unchanged so listings imported before office fields were synced get backfilled.
+        spark_save_listing_office( $post_id, $listing );
+
         if ( 'publish' !== get_post_status( $post_id ) ) {
             wp_update_post( array( 'ID' => $post_id, 'post_status' => 'publish' ) );
         }
@@ -319,6 +322,7 @@ function spark_import_listing( $listing ) {
     update_post_meta( $post_id, 'spark_api_id', $listing_id );
     update_post_meta( $post_id, 'spark_modified', $modified );
     update_post_meta( $post_id, 'spark_content', $content );
+    spark_save_listing_office( $post_id, $listing );
 
     $baths = $listing['BathroomsTotalDecimal'] ?? $listing['BathroomsTotalInteger'] ?? '';
     $sqft  = $listing['LivingArea'] ?? '';
@@ -338,6 +342,18 @@ function spark_import_listing( $listing ) {
     }
 
     return $listing_id;
+}
+
+/**
+ * Save the listing firm and its contact details, required for IDX attribution (BeachesMLS rule 20.3.3).
+ *
+ * @param int   $post_id Listing post ID.
+ * @param array $listing Property record from the RESO Web API.
+ */
+function spark_save_listing_office( $post_id, $listing ) {
+    update_post_meta( $post_id, 'list_office_name', sanitize_text_field( (string) ( $listing['ListOfficeName'] ?? '' ) ) );
+    update_post_meta( $post_id, 'list_office_phone', sanitize_text_field( (string) ( $listing['ListOfficePhone'] ?? '' ) ) );
+    update_post_meta( $post_id, 'list_office_email', sanitize_email( (string) ( $listing['ListOfficeEmail'] ?? '' ) ) );
 }
 
 /**

@@ -10,23 +10,66 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Listing archive sort options. The first entry is the default.
+ *
+ * @return array<string, array{label: string, meta_key: string, order: string}>
+ */
+function jxm_listing_sort_options() {
+	return array(
+		'newest'     => array(
+			'label'    => __( 'Newest', 'jxm' ),
+			'meta_key' => '',
+			'order'    => 'DESC',
+		),
+		'price_desc' => array(
+			'label'    => __( 'Price: High to Low', 'jxm' ),
+			'meta_key' => 'price',
+			'order'    => 'DESC',
+		),
+		'price_asc'  => array(
+			'label'    => __( 'Price: Low to High', 'jxm' ),
+			'meta_key' => 'price',
+			'order'    => 'ASC',
+		),
+		'beds_desc'  => array(
+			'label'    => __( 'Most Bedrooms', 'jxm' ),
+			'meta_key' => 'bedrooms',
+			'order'    => 'DESC',
+		),
+		'sqft_desc'  => array(
+			'label'    => __( 'Largest', 'jxm' ),
+			'meta_key' => 'sqft',
+			'order'    => 'DESC',
+		),
+	);
+}
+
+/**
  * Sanitize and return current listing filter values from the request.
  *
- * @return array{keyword: string, beds: int, baths: float}
+ * @return array{keyword: string, beds: int, baths: float, sort: string}
  */
 function jxm_get_listing_filters() {
 	$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( wp_unslash( $_GET['keyword'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$beds    = isset( $_GET['beds'] ) ? absint( $_GET['beds'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$baths   = isset( $_GET['baths'] ) ? (float) wp_unslash( $_GET['baths'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$sort    = isset( $_GET['sort'] ) ? sanitize_key( wp_unslash( $_GET['sort'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 	if ( $baths < 0 ) {
 		$baths = 0;
+	}
+
+	$sort_options = jxm_listing_sort_options();
+
+	if ( ! isset( $sort_options[ $sort ] ) ) {
+		$sort = array_key_first( $sort_options );
 	}
 
 	return array(
 		'keyword' => $keyword,
 		'beds'    => $beds,
 		'baths'   => $baths,
+		'sort'    => $sort,
 	);
 }
 
@@ -73,8 +116,51 @@ function jxm_listing_archive_query( $query ) {
 	if ( count( $meta_query ) > 1 ) {
 		$query->set( 'meta_query', $meta_query );
 	}
+
+	if ( jxm_listing_sort_options()[ $filters['sort'] ]['meta_key'] ) {
+		$query->set( 'jxm_listing_sort', $filters['sort'] );
+	}
 }
 add_action( 'pre_get_posts', 'jxm_listing_archive_query' );
+
+/**
+ * Order listings by a numeric meta value, keeping listings without a value last.
+ *
+ * Done in SQL rather than via `meta_key`/`orderby` so listings missing the field aren't
+ * dropped, and so comma-formatted values like sqft "2,150" sort numerically.
+ *
+ * @param array    $clauses Query clauses.
+ * @param WP_Query $query   Query.
+ * @return array
+ */
+function jxm_listing_sort_clauses( $clauses, $query ) {
+	global $wpdb;
+
+	$sort = $query->get( 'jxm_listing_sort' );
+
+	if ( ! $sort || is_admin() ) {
+		return $clauses;
+	}
+
+	$options = jxm_listing_sort_options();
+
+	if ( empty( $options[ $sort ]['meta_key'] ) ) {
+		return $clauses;
+	}
+
+	$order = 'ASC' === $options[ $sort ]['order'] ? 'ASC' : 'DESC';
+	$value = "CAST( REPLACE( jxm_sort.meta_value, ',', '' ) AS DECIMAL(15,2) )";
+
+	$clauses['join'] .= $wpdb->prepare(
+		" LEFT JOIN {$wpdb->postmeta} jxm_sort ON ( jxm_sort.post_id = {$wpdb->posts}.ID AND jxm_sort.meta_key = %s )",
+		$options[ $sort ]['meta_key']
+	);
+
+	$clauses['orderby'] = "COALESCE( jxm_sort.meta_value, '' ) = '' ASC, {$value} {$order}, {$wpdb->posts}.post_date DESC";
+
+	return $clauses;
+}
+add_filter( 'posts_clauses', 'jxm_listing_sort_clauses', 10, 2 );
 
 /**
  * Keyword search across title, content, address, and MLS #.
@@ -132,6 +218,41 @@ function jxm_format_listing_price( $price ) {
 	}
 
 	return (string) $price;
+}
+
+/**
+ * Whether a listing came from the BeachesMLS IDX feed (as opposed to being entered by hand).
+ *
+ * @param int $listing_id Listing post ID.
+ * @return bool
+ */
+function jxm_is_mls_listing( $listing_id ) {
+	return '' !== (string) get_post_meta( $listing_id, 'spark_api_id', true );
+}
+
+/**
+ * BeachesMLS logo URL, versioned so browsers pick up changes to the file.
+ *
+ * @return string
+ */
+function jxm_beachesmls_logo_url() {
+	$file = 'assets/images/BeachesMLS+Vector.svg';
+
+	return add_query_arg( 'ver', (string) filemtime( get_theme_file_path( $file ) ), get_theme_file_uri( $file ) );
+}
+
+/**
+ * Listing firm and contact details synced from the MLS feed.
+ *
+ * @param int $listing_id Listing post ID.
+ * @return array{name: string, phone: string, email: string} Empty name when the listing has no MLS office.
+ */
+function jxm_get_listing_office( $listing_id ) {
+	return array(
+		'name'  => (string) get_post_meta( $listing_id, 'list_office_name', true ),
+		'phone' => (string) get_post_meta( $listing_id, 'list_office_phone', true ),
+		'email' => (string) get_post_meta( $listing_id, 'list_office_email', true ),
+	);
 }
 
 /**

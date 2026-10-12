@@ -13,6 +13,31 @@
 		"blockVersion": 3,
 		"fields": [
 			{
+				"name": "random_listings",
+				"label": "Random listings over $750k",
+				"type": "true_false",
+				"instructions": "Show a random selection of listings priced at $750,000 or more instead of hand-picked ones. A new selection is drawn on each page load.",
+				"ui": 1,
+				"default_value": 0
+			},
+			{
+				"name": "random_count",
+				"label": "Number of listings",
+				"type": "number",
+				"default_value": 6,
+				"min": 1,
+				"max": 12,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_featured_listings_random_listings",
+							"operator": "==",
+							"value": "1"
+						}
+					]
+				]
+			},
+			{
 				"name": "listings",
 				"label": "Listings",
 				"type": "post_object",
@@ -21,7 +46,16 @@
 				"return_format": "object",
 				"multiple": 1,
 				"ui": 1,
-				"allow_null": 1
+				"allow_null": 1,
+				"conditional_logic": [
+					[
+						{
+							"field": "field_featured_listings_random_listings",
+							"operator": "!=",
+							"value": "1"
+						}
+					]
+				]
 			}
 		]
 	},

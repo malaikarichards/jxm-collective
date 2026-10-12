@@ -164,12 +164,22 @@ while ( have_posts() ) :
 								</li>
 							<?php endif; ?>
 						</ul>
+						<?php
+						get_template_part(
+							'template-parts/listing-attribution',
+							null,
+							array(
+								'listing_id' => $listing_id,
+								'class'      => 'text-jxm-navy/80 mb-8',
+							)
+						);
+						?>
 						<div id="eb-listing-form"></div>
 <script>
 (window.EhDynamicRef ||= []).push(() => {
     EhForms.create({
       "formId": "4516006341640192", // Required: The unique ID of your form
-      "target": "#eb-listtng-form", // Optional: Use a selector like ".class" or "#id"
+      "target": "#eb-listing-form", // Optional: Use a selector like ".class" or "#id"
       "onFormReady": function(el, setValue) { // Optional: Callback function triggered when the form is fully loaded
         // Example: Automatically fill the email field
         // setValue("email", "hello@example.com");
@@ -210,6 +220,12 @@ const iframe = document.getElementById('eh_form_ifrm_4516006341640192');
 					</div>
 				</aside>
 			</div>
+
+			<?php
+			if ( jxm_is_mls_listing( $listing_id ) ) {
+				get_template_part( 'template-parts/listing-disclaimer', null, array( 'class' => 'mt-12 pt-8 border-t border-jxm-navy/10' ) );
+			}
+			?>
 		</div>
 	</article>
 </main>

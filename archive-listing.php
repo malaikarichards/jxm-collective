@@ -13,6 +13,8 @@ $has_filters   = $filters['keyword'] || $filters['beds'] || $filters['baths'];
 $result_count  = (int) $GLOBALS['wp_query']->found_posts;
 $bed_options   = range( 1, 5 );
 $bath_options  = array( 1, 1.5, 2, 2.5, 3, 3.5, 4 );
+$sort_options  = jxm_listing_sort_options();
+$default_sort  = array_key_first( $sort_options );
 ?>
 
 <main class="bg-jxm-cream/40 flex-grow">
@@ -32,7 +34,7 @@ $bath_options  = array( 1, 1.5, 2, 2.5, 3, 3.5, 4 );
 				class="grid gap-4 md:grid-cols-2 lg:grid-cols-12 lg:items-end"
 				role="search"
 			>
-				<div class="lg:col-span-5">
+				<div class="lg:col-span-4">
 					<label for="listing-keyword" class="block text-sm font-medium text-jxm-navy mb-2">
 						<?php esc_html_e( 'Keyword', 'jxm' ); ?>
 					</label>
@@ -94,7 +96,24 @@ $bath_options  = array( 1, 1.5, 2, 2.5, 3, 3.5, 4 );
 					</select>
 				</div>
 
-				<div class="flex flex-wrap gap-3 lg:col-span-3">
+				<div class="lg:col-span-2">
+					<label for="listing-sort" class="block text-sm font-medium text-jxm-navy mb-2">
+						<?php esc_html_e( 'Sort by', 'jxm' ); ?>
+					</label>
+					<select
+						id="listing-sort"
+						name="sort"
+						class="w-full border border-jxm-navy/15 bg-white px-4 py-3 text-jxm-navy focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+					>
+						<?php foreach ( $sort_options as $sort_key => $sort_option ) : ?>
+							<option value="<?php echo esc_attr( $sort_key ); ?>" <?php selected( $filters['sort'], $sort_key ); ?>>
+								<?php echo esc_html( $sort_option['label'] ); ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+
+				<div class="flex flex-wrap gap-3 lg:col-span-2">
 					<button type="submit" class="btn-primary bg-accent text-white font-semibold py-3 px-6 border-0 cursor-pointer">
 						<?php esc_html_e( 'Search', 'jxm' ); ?>
 					</button>
@@ -136,6 +155,7 @@ $bath_options  = array( 1, 1.5, 2, 2.5, 3, 3.5, 4 );
 						'keyword' => $filters['keyword'],
 						'beds'    => $filters['beds'] ? (string) $filters['beds'] : '',
 						'baths'   => $filters['baths'] ? (string) $filters['baths'] : '',
+						'sort'    => $default_sort !== $filters['sort'] ? $filters['sort'] : '',
 					)
 				);
 
@@ -149,6 +169,8 @@ $bath_options  = array( 1, 1.5, 2, 2.5, 3, 3.5, 4 );
 				);
 				?>
 			</nav>
+
+			<?php get_template_part( 'template-parts/listing-disclaimer', null, array( 'class' => 'mt-12 pt-8 border-t border-jxm-navy/10' ) ); ?>
 		<?php else : ?>
 			<div class="max-w-xl py-8">
 				<h2 class="font-serif text-2xl text-jxm-navy mb-3"><?php esc_html_e( 'No listings match your search', 'jxm' ); ?></h2>
