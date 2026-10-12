@@ -114,23 +114,6 @@ while ( have_posts() ) :
 						</div>
 					<?php endif; ?>
 
-					<?php if ( jxm_is_mls_listing( $listing_id ) ) : ?>
-						<section class="mb-10" aria-label="<?php esc_attr_e( 'Listing information source', 'jxm' ); ?>">
-							<?php
-							get_template_part(
-								'template-parts/listing-attribution',
-								null,
-								array(
-									'listing_id' => $listing_id,
-									'class'      => 'text-jxm-navy/80 mb-6',
-								)
-							);
-
-							get_template_part( 'template-parts/listing-disclaimer' );
-							?>
-						</section>
-					<?php endif; ?>
-
 					<?php if ( $features ) : ?>
 						<section class="mb-10">
 							<h2 class="font-serif text-2xl text-jxm-navy mt-0 mb-5"><?php esc_html_e( 'Features', 'jxm' ); ?></h2>
@@ -150,10 +133,53 @@ while ( have_posts() ) :
 							</div>
 						</section>
 					<?php endif; ?>
+
+					<?php if ( $address ) : ?>
+						<section class="mb-10">
+							<h2 class="font-serif text-2xl text-jxm-navy mt-0 mb-5"><?php esc_html_e( 'Location', 'jxm' ); ?></h2>
+							<div class="bg-secondary shadow-soft">
+								<iframe
+									src="<?php echo esc_url( 'https://maps.google.com/maps?' . http_build_query( array( 'q' => $address, 'z' => 15, 'output' => 'embed' ) ) ); ?>"
+									title="<?php echo esc_attr( sprintf( /* translators: %s: listing address */ __( 'Map of %s', 'jxm' ), $address ) ); ?>"
+									class="block w-full aspect-video border-0"
+									loading="lazy"
+									referrerpolicy="no-referrer-when-downgrade"
+									allowfullscreen
+								></iframe>
+							</div>
+							<p class="mt-3 mb-0 text-sm">
+								<a
+									href="<?php echo esc_url( 'https://www.google.com/maps/search/?' . http_build_query( array( 'api' => 1, 'query' => $address ) ) ); ?>"
+									class="text-jxm-navy/70 hover:text-accent no-underline transition-colors duration-300"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<?php esc_html_e( 'Open in Google Maps', 'jxm' ); ?> <i class="fa-solid fa-arrow-up-right-from-square text-xs" aria-hidden="true"></i>
+								</a>
+							</p>
+						</section>
+					<?php endif; ?>
+
+					<?php
+					get_template_part(
+						'template-parts/listing-attribution',
+						null,
+						array(
+							'listing_id' => $listing_id,
+							'class'      => 'text-jxm-navy/80 mb-6',
+						)
+					);
+
+					if ( jxm_is_mls_listing( $listing_id ) ) {
+						get_template_part( 'template-parts/listing-disclaimer', null, array( 'class' => 'mb-10' ) );
+					}
+					?>
 				</div>
 
 				<aside class="lg:col-span-4">
 					<div class="bg-white shadow-soft p-6 lg:p-8 lg:sticky lg:top-24">
+						
+					<h2 class="font-serif text-2xl text-jxm-navy mt-0 mb-5"><?php esc_html_e( 'Property Stats', 'jxm' ); ?></h2>
 						<?php if ( $price_display ) : ?>
 							<p class="text-sm uppercase tracking-widest text-jxm-navy/50 mb-2"><?php esc_html_e( 'Price', 'jxm' ); ?></p>
 							<p class="font-serif text-3xl text-jxm-navy mt-0 mb-6"><?php echo esc_html( $price_display ); ?></p>
@@ -191,6 +217,7 @@ while ( have_posts() ) :
 								</li>
 							<?php endif; ?>
 						</ul>
+						<h2 class="font-serif text-2xl text-jxm-navy mt-0 mb-5"><?php esc_html_e( 'Inquire About This Listing', 'jxm' ); ?></h2>
 						<div id="eb-listing-form"></div>
 <script>
 (window.EhDynamicRef ||= []).push(() => {
