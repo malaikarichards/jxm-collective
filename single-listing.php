@@ -37,6 +37,21 @@ while ( have_posts() ) :
 		$hero_url = $gallery[0]['url'];
 		$hero_alt = ! empty( $gallery[0]['alt'] ) ? $gallery[0]['alt'] : $hero_alt;
 	}
+
+	// Lightbox photos: the featured image first (when set), then the gallery without duplicates.
+	$photos = array();
+
+	if ( has_post_thumbnail( $listing_id ) ) {
+		$photos[ get_the_post_thumbnail_url( $listing_id, 'full' ) ] = get_the_title();
+	}
+
+	foreach ( $gallery as $photo ) {
+		if ( ! empty( $photo['url'] ) && ! isset( $photos[ $photo['url'] ] ) ) {
+			$photos[ $photo['url'] ] = ! empty( $photo['alt'] ) ? $photo['alt'] : get_the_title();
+		}
+	}
+
+	$photo_count = count( $photos );
 	?>
 
 <main class="bg-jxm-cream/40 flex-grow">
@@ -48,6 +63,25 @@ while ( have_posts() ) :
 					alt="<?php echo esc_attr( $hero_alt ); ?>"
 					class="w-full max-h-[70vh] object-cover"
 				>
+
+				<?php if ( $photo_count > 1 ) : ?>
+					<button
+						type="button"
+						class="absolute bottom-4 right-4 lg:bottom-6 lg:right-6 inline-flex items-center gap-2 bg-white text-jxm-navy text-sm font-semibold px-5 py-3 border-0 shadow-soft cursor-pointer hover:bg-jxm-cream transition-colors duration-300"
+						data-gallery-open="0"
+						aria-haspopup="dialog"
+						aria-controls="listing-gallery"
+					>
+						<i class="fa-solid fa-images" aria-hidden="true"></i>
+						<?php
+						printf(
+							/* translators: %d: number of photos */
+							esc_html__( 'View gallery (%d)', 'jxm' ),
+							(int) $photo_count
+						);
+						?>
+					</button>
+				<?php endif; ?>
 			</div>
 		<?php endif; ?>
 
@@ -80,27 +114,20 @@ while ( have_posts() ) :
 						</div>
 					<?php endif; ?>
 
-					<?php if ( count( $gallery ) > 1 ) : ?>
-						<section class="mb-10" aria-label="<?php esc_attr_e( 'Listing gallery', 'jxm' ); ?>">
-							<h2 class="font-serif text-2xl text-jxm-navy mt-0 mb-5"><?php esc_html_e( 'Gallery', 'jxm' ); ?></h2>
-							<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-								<?php foreach ( $gallery as $index => $photo ) : ?>
-									<?php
-									if ( empty( $photo['url'] ) || ( 0 === $index && $hero_url === $photo['url'] && ! has_post_thumbnail( $listing_id ) ) ) {
-										continue;
-									}
-									$alt = ! empty( $photo['alt'] ) ? $photo['alt'] : get_the_title();
-									?>
-									<figure class="overflow-hidden bg-secondary m-0">
-										<img
-											src="<?php echo esc_url( $photo['url'] ); ?>"
-											alt="<?php echo esc_attr( $alt ); ?>"
-											class="w-full h-48 object-cover"
-											loading="lazy"
-										>
-									</figure>
-								<?php endforeach; ?>
-							</div>
+					<?php if ( jxm_is_mls_listing( $listing_id ) ) : ?>
+						<section class="mb-10" aria-label="<?php esc_attr_e( 'Listing information source', 'jxm' ); ?>">
+							<?php
+							get_template_part(
+								'template-parts/listing-attribution',
+								null,
+								array(
+									'listing_id' => $listing_id,
+									'class'      => 'text-jxm-navy/80 mb-6',
+								)
+							);
+
+							get_template_part( 'template-parts/listing-disclaimer' );
+							?>
 						</section>
 					<?php endif; ?>
 
@@ -164,16 +191,6 @@ while ( have_posts() ) :
 								</li>
 							<?php endif; ?>
 						</ul>
-						<?php
-						get_template_part(
-							'template-parts/listing-attribution',
-							null,
-							array(
-								'listing_id' => $listing_id,
-								'class'      => 'text-jxm-navy/80 mb-8',
-							)
-						);
-						?>
 						<div id="eb-listing-form"></div>
 <script>
 (window.EhDynamicRef ||= []).push(() => {
@@ -220,14 +237,56 @@ const iframe = document.getElementById('eh_form_ifrm_4516006341640192');
 					</div>
 				</aside>
 			</div>
-
-			<?php
-			if ( jxm_is_mls_listing( $listing_id ) ) {
-				get_template_part( 'template-parts/listing-disclaimer', null, array( 'class' => 'mt-12 pt-8 border-t border-jxm-navy/10' ) );
-			}
-			?>
 		</div>
 	</article>
+
+	<?php if ( $photo_count > 1 ) : ?>
+		<dialog id="listing-gallery" class="listing-gallery" aria-label="<?php esc_attr_e( 'Listing gallery', 'jxm' ); ?>">
+			<div class="flex h-full flex-col">
+				<div class="flex items-center justify-between px-4 py-3 sm:px-6">
+					<p class="mb-0 text-sm text-white/80" data-gallery-counter aria-live="polite"></p>
+					<button type="button" class="listing-gallery__control" data-gallery-close aria-label="<?php esc_attr_e( 'Close gallery', 'jxm' ); ?>">
+						<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+					</button>
+				</div>
+
+				<div class="relative flex min-h-0 flex-1 items-center justify-center px-4 sm:px-20" data-gallery-stage>
+					<button type="button" class="listing-gallery__control absolute left-2 top-1/2 -translate-y-1/2 sm:left-6" data-gallery-prev aria-label="<?php esc_attr_e( 'Previous photo', 'jxm' ); ?>">
+						<i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+					</button>
+					<img src="" alt="" class="max-h-full max-w-full object-contain" data-gallery-image>
+					<button type="button" class="listing-gallery__control absolute right-2 top-1/2 -translate-y-1/2 sm:right-6" data-gallery-next aria-label="<?php esc_attr_e( 'Next photo', 'jxm' ); ?>">
+						<i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+					</button>
+				</div>
+
+				<ul class="m-0 flex list-none gap-2 overflow-x-auto p-4 sm:px-6">
+					<?php
+					$photo_index = 0;
+					foreach ( $photos as $photo_url => $photo_alt ) :
+						/* translators: 1: photo number, 2: total photos */
+						$thumb_label = sprintf( __( 'Photo %1$d of %2$d', 'jxm' ), $photo_index + 1, $photo_count );
+						?>
+						<li class="shrink-0">
+							<button
+								type="button"
+								class="listing-gallery__thumb"
+								data-gallery-index="<?php echo esc_attr( (string) $photo_index ); ?>"
+								data-src="<?php echo esc_url( $photo_url ); ?>"
+								data-alt="<?php echo esc_attr( $photo_alt ); ?>"
+								aria-label="<?php echo esc_attr( $thumb_label ); ?>"
+							>
+								<img src="<?php echo esc_url( $photo_url ); ?>" alt="" class="block h-16 w-24 object-cover" loading="lazy" decoding="async">
+							</button>
+						</li>
+						<?php
+						++$photo_index;
+					endforeach;
+					?>
+				</ul>
+			</div>
+		</dialog>
+	<?php endif; ?>
 </main>
 
 	<?php

@@ -169,8 +169,6 @@ $default_sort  = array_key_first( $sort_options );
 				);
 				?>
 			</nav>
-
-			<?php get_template_part( 'template-parts/listing-disclaimer', null, array( 'class' => 'mt-12 pt-8 border-t border-jxm-navy/10' ) ); ?>
 		<?php else : ?>
 			<div class="max-w-xl py-8">
 				<h2 class="font-serif text-2xl text-jxm-navy mb-3"><?php esc_html_e( 'No listings match your search', 'jxm' ); ?></h2>
